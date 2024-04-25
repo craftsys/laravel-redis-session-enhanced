@@ -1,0 +1,63 @@
+{
+    "name": "craftsys/laravel-redis-session-enhanced",
+    "description": "Enhanced redis driver for sessions in Laravel",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Sudhir Mitharwal",
+            "email": "luckysud4@gmail.com",
+            "role": "Developer",
+            "homepage": "http://github.com/sudkumar"
+        }
+    ],
+    "keywords": [
+        "php",
+        "laravel",
+        "session",
+        "redis"
+    ],
+    "homepage": "https://github.com/craftsys/laravel-redis-session-enhanced",
+    "support": {
+        "issues": "https://github.com/craftsys/laravel-redis-session-enhanced/issues",
+        "source": "https://github.com/craftsys/laravel-redis-session-enhanced",
+        "email": "luckysud4@gmail.com"
+    },
+    "require": {
+        "php": "^7.1.3|^8.0|^8.1",
+        "illuminate/support": "^5.2|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "~3.8|^4.0|^5.0|^6.0|^7.0|^8.0|^9.0",
+        "phpunit/phpunit": "^5.3|^6.0|^7.0|^8.0|^9.4|^10.0"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Craftsys\\LaravelRedisSessionEnhanced\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Craftsys\\Tests\\LaravelRedisSessionEnhanced\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.x.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Craftsys\\LaravelRedisSessionEnhanced\\RedisSessionEnhancedProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "phpunit  --colors=always"
+    }
+}
