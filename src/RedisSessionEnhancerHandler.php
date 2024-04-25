@@ -117,7 +117,7 @@ class RedisSessionEnhancerHandler
 
         return tap($payload, function (&$payload) {
             $this->addUserInformation($payload)->addRequestInformation(
-                $payload,
+                $payload
             );
         });
     }
