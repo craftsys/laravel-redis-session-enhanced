@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/craftsys/laravel-redis-session-enhanced/compare/v1.0.4...v1.0.5) (2024-04-25)
+
+
+### Bug Fixes
+
+* **discovery:** fix the namespace in composer ([e188b68](https://github.com/craftsys/laravel-redis-session-enhanced/commit/e188b68f62795c1f4c77d75e599e56cf33847a1c))
+
 ## [1.0.4](https://github.com/craftsys/laravel-redis-session-enhanced/compare/v1.0.3...v1.0.4) (2024-04-25)
 
 
