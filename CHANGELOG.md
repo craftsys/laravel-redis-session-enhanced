@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/craftsys/laravel-redis-session-enhanced/compare/v1.0.3...v1.0.4) (2024-04-25)
+
+
+### Bug Fixes
+
+* **docs:** update read me ([bb3f2a3](https://github.com/craftsys/laravel-redis-session-enhanced/commit/bb3f2a3a402d412585950f5ee4a73c17e7d5766a))
+
 ## [1.0.3](https://github.com/craftsys/laravel-redis-session-enhanced/compare/v1.0.2...v1.0.3) (2024-04-25)
 
 
