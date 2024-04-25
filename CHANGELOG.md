@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/craftsys/laravel-redis-session-enhanced/compare/v1.0.2...v1.0.3) (2024-04-25)
+
+
+### Bug Fixes
+
+* **php72:** remove commas ([1c43caa](https://github.com/craftsys/laravel-redis-session-enhanced/commit/1c43caaf6d071c0a6252ea20a54e322b7be19c71))
+
 ## [1.0.2](https://github.com/craftsys/laravel-redis-session-enhanced/compare/v1.0.1...v1.0.2) (2024-04-25)
 
 
