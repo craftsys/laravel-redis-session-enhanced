@@ -59,8 +59,10 @@ Add `Craftsys\LaravelRedisSessionEnhanced\RedisSessionEnhancedServiceProvider` t
 
 ## Configuration
 
-1. Add a new connection named `session` in your `config/database.php` redis configuration
+The package usage your existing configuration files and requires following modification in configs and env file.
 
+
+1. Add a new connection named `session` in your `config/database.php` redis configuration
 ```php
 [
   'redis' => [
@@ -84,5 +86,46 @@ SESSION_DRIVER=redis-session
 SESSION_CONNECTION=session
 ```
 
+If you have cached your config file, you might want to run `php artisan config:clear` and `php artisan config:cache` to revalidate the cache.
 
 ## Usage
+
+Once you configure, the session data will be automatically stored in Redis cache with automatic validation. The stored session data has following properties in the cache.
+
+```ts
+{
+    "id": string, // session id
+    "user_id": number|string, // user id
+    "ip_address": null|string, // request ip address
+    "user_agent": string, // request user agent
+    "last_activty": number, // user's last request timestamp
+    "payload": string, // serialized/encrypted session data,
+}
+```
+
+If you want to get the underlying handler of the session (`RedisSessionEnhancerHandler` instance) in your application code, you can use the `Illuminate\Support\Facades\Session::getHandler()`. Along with the required [Session Interface for Custom Drivers by Laravel](https://laravel.com/docs/session#implementing-the-driver), this helper provides `readAll` and `destroyAll` methods to work with stored sessions. This package also includes a helper to work with sessions.
+
+### SessionHelper
+
+To retrieve the stored session data from the cache, you should use the `Craftsys\LaravelRedisSessionEnhanced\SessionHelper` class. This helper class also handles the `SESSION_DRIVER=database` driver so that you can easily switch between database and redis drivers as per your application needs, without changing the application code for sessions.
+
+The following helper functions are provided:
+
+```php
+use Craftsys\LaravelRedisSessionEnhanced\SessionHelper;
+
+// 1. Show the active/all sessions of a User
+SessionHelper::getForUser($user_id) // get collection of all sessions of a user
+SessionHelper::getForUser($user_id, true) // get collection of all active sessions of a user
+
+// 2. Remove all/other sessions of a user
+SessionHelper::deleteForUserExceptSession($user_id, [request()->session()->id]) // delete user's sessions except the current request
+SessionHelper::deleteForUserExceptSession($user_id) // delete all sessions of a user
+
+// 3. Remove All sessions (can be used in a command to flush out all sessions by DevOps)
+SessionHelper::deleteAll() // delete all the sessions stored in database of every
+
+// 4. Check if the application is configured with valid driver (database/redis).
+SessionHelper::isUsingValidDriver() // return true if using SESSION_DRIVER=database or SESSION_DRIVER=redis-session
+```
+

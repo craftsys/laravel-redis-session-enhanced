@@ -9,15 +9,20 @@ use Illuminate\Support\Facades\Session;
 
 class SessionHelper
 {
+    /**
+     * Get all the session for the given user id
+     * @param int|string $user_id Id/Key of the user, must match the Id used in sessions
+     * @param bool $only_active Get the active only sessions
+     */
     public static function getForUser(
-        int $user_id,
+        $user_id,
         bool $only_active = false
     ): Collection {
         if (!self::isUsingValidDriver()) {
             return collect([]);
         }
         return collect(
-            self::queryBuilerForUser($user_id)
+            self::getAll($user_id)
                 ->when($only_active, function (Collection $sessions) {
                     return $sessions->where(
                         'last_activity',
@@ -30,70 +35,60 @@ class SessionHelper
         );
     }
 
-    public static function getCountForUser(
-        int $user_id,
-        bool $only_active = false
-    ): int {
-        if (!self::isUsingValidDriver()) {
-            return 0;
-        }
-        return self::queryBuilerForUser($user_id)
-            ->when($only_active, function (Collection $sessions) {
-                return $sessions->where(
-                    'last_activity',
-                    '>=',
-                    self::getTimestampOfLastActivityForActiveSession(),
-                );
+    /**
+     * Delete a User's sessions except the given session IDs
+     * @param int|string $user_id
+     * @param string|array<string> $except_session_id Non-deletable session ids, pass empty to delete all
+     */
+    public static function deleteForUserExceptSession(
+        $user_id,
+        $except_session_id = []
+    ): void {
+        $session_ids = Arr::wrap($except_session_id);
+        self::getForUser($user_id)
+            ->when(count($session_ids), function (Collection $sessions) use (
+                $session_ids
+            ) {
+                return $sessions->whereNotIn('id', $session_ids);
             })
-            ->count();
-    }
-
-    public static function getActiveCountForUser(int $user_id): int
-    {
-        return self::getCountForUser($user_id, true);
+            ->each(function ($session) {
+                $id = $session->id;
+                Session::getHandler()->destroy($id);
+            });
     }
 
     /**
-     * @param string|array<string> $session_id
+     * Get all the sessions from the store
+     * @param null|int|string $user_id Optionally get all the stored sessions of a particular user
      */
-    public static function deleteForUserExceptSession(
-        int $user_id,
-        $except_session_id
-    ): void {
-        if (self::isUsingValidDriver()) {
-            $session_ids = Arr::wrap($except_session_id);
-            self::queryBuilerForUser($user_id)
-                ->when(count($session_ids), function (Collection $builder) use (
-                    $session_ids
-                ) {
-                    return $builder->whereNotIn('id', $session_ids);
-                })
-                ->each(function ($session) {
-                    $id = $session->id;
-                    Session::getHandler()->destroy($id);
-                });
-        }
-    }
-
-    protected static function queryBuilerForUser(int $user_id): Collection
+    public static function getAll($user_id = null): Collection
     {
         if (self::isUsingDatabaseDriver()) {
             return DB::connection(config('session.connection'))
                 ->table(config('session.table', 'sessions'))
-                ->where('user_id', $user_id)
+                ->when($user_id, function ($sessions) use ($user_id) {
+                    return $sessions->where('user_id', $user_id);
+                })
                 ->get();
         }
         if (self::isUsingRedisDatabaseDriver()) {
             /** @var RedisDatabaseLikeSessionHandler */
             $handler = Session::getHandler();
-            return $handler->readAll()->where('user_id', $user_id);
+            $all = $handler->readAll();
+            if ($user_id) {
+                $all = $all->where('user_id', $user_id);
+            }
+            return $all;
         }
         throw new \Exception(
             'SessionHelper can only be used for database/redis drivers',
         );
     }
 
-    public static function destroyAll(): void
+    /**
+     * Destroy all the sessions data
+     */
+    public static function deleteAll(): void
     {
         switch (true) {
             case self::isUsingDatabaseDriver():

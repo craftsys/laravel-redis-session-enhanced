@@ -278,7 +278,6 @@ class RedisSessionEnhancerHandler
 
     public function destroyAll(): bool
     {
-        /** @var RedisStore */
         $store = $this->cache->getStore();
         return $store->flush();
     }
