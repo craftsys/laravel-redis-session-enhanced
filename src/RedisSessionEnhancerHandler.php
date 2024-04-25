@@ -185,7 +185,7 @@ class RedisSessionEnhancerHandler
         return substr(
             (string) $this->container->make('request')->header('User-Agent'),
             0,
-            500,
+            500
         );
     }
 
