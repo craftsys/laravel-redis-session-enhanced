@@ -26,7 +26,7 @@ class SessionHelper
                     );
                 })
                 ->sortByDesc('last_activity')
-                ->values(),
+                ->values()
         );
     }
 

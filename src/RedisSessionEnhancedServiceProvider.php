@@ -14,7 +14,7 @@ class RedisSessionEnhancedServiceProvider extends ServiceProvider
             $config = $app['config'];
             $handler = (new RedisSessionEnhancerHandler(
                 clone $app->make('cache')->store('redis'),
-                $config->get('session.lifetime'),
+                $config->get('session.lifetime')
             ))->setContainer($app);
             // set the connection
             $connection = $config->get('session.connection');
